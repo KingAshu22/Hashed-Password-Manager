@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vault - Passwordless Password Manager</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Custom CSS -->
+    <style>
+      /* Add custom styles here */
+      body {
+        background-color: #f0f0f0;
+      }
+      .container-fluid {
+        padding: 0;
+      }
+      .sidebar {
+        background-color: #333;
+        color: #fff;
+        height: 100vh;
+      }
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .sidebar li {
+        padding: 10px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+      }
+      .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .summary {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+      }
+      .card {
+        background-color: #B931FC;
+        color: #fff;
+        padding: 30px; /* Increase padding for a larger card */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-size: 24px; /* Increase font size for larger text */
+        margin: 5%
+      }
+      .card p {
+        font-size: 400%;
+      }
+      .red {
+        background-color: #D80032;
+      }
+      .yellow {
+        background-color: #241468;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      .entry {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 10px;
+      }
+      .entry .website-name {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 sidebar">
+          <ul>
+            <li><a href="">Dashboard</a></li>
+            <li><a href="/create-vault">Create a New Vault</a></li>
+            <li><a href="/vault">Vault</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <!-- Add more sidebar links as needed -->
+          </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <% const vault = JSON.stringify(user.vault); %>
+        <main class="col-md-10 content">
+          <div class="dashboard-container">
+            <header>
+              <h1>Password Manager Dashboard</h1>
+            </header>
+            <div class="summary">
+              <a href="/vault" style="text-decoration: none; color: #fff;">
+                <div class="card">
+                  <h2>Total Passwords Saved</h2>
+                <p id="totalPasswords"><%= user.vault.length %></p>
+              </div>
+              </a>
+              <div class="card yellow">
+                <h2>Passwords to be Updated</h2>
+                <p id="passwordsToUpdate"></p>
+              </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+
+  function updatePasswordsToBeUpdatedCount() {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const parsedVault = JSON.parse('<%- vault %>'); // Parse JSON data
+
+    let passwordsToBeUpdatedCount = 0;
+
+    for (const password of parsedVault) {
+      const lastUpdatedDate = new Date(password.lastUpdated);
+
+      if (lastUpdatedDate < oneMonthAgo) {
+        passwordsToBeUpdatedCount++;
+      }
+    }
+
+    const passwordsToUpdateElement = document.getElementById("passwordsToUpdate");
+    passwordsToUpdateElement.textContent = passwordsToBeUpdatedCount || '0'; // Use '0' if count is falsy
+  }
+
+  // Call the function to update the count on page load
+  updatePasswordsToBeUpdatedCount();
+</script>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
